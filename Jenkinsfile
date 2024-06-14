@@ -7,11 +7,11 @@ pipeline {
                 script {
                     def branch = 'main'
                     try {
-                        git url: 'https://github.com/NavyaADevops/navya-repo.git', branch: branch
+                        git url: 'https://github.com/jenkins-docs/simple-java-maven-app.git', branch: branch
                     } catch (Exception e) {
                         echo "Failed to checkout branch '${branch}'. Checking for 'master' branch."
                         branch = 'master'
-                        git url: 'https://github.com/NavyaADevops/navya-repo.git', branch: branch
+                        git url: 'https://github.com/jenkins-docs/simple-java-maven-app.git', branch: branch
                     }
                 }
             }
@@ -39,6 +39,14 @@ pipeline {
         success {
             // Trigger another job named "first" after success of all stages
             build job: 'first'
+
+            // Send email notification on success
+            emailext (
+                subject: 'Pipeline Successful: ${currentBuild.fullDisplayName}',
+                body: 'Good news! The pipeline ${env.JOB_NAME} [${env.BUILD_NUMBER}] has completed successfully.',
+                to: 'navya2022developer@gmail.com'
+            )
         }
     }
 }
+
